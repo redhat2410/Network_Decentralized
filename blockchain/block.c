@@ -1,6 +1,15 @@
 #include "block.h"
 
-void MD5convert(byte value[], word length, byte *result){
+data create_data(WORD length, BYTE *buff){
+    data segment;
+    // write packet data
+    segment.length = length;
+    memcpy(&segment.value[0], buff, sizeof(BYTE) * length);
+    // return packet data have been written.
+    return segment;
+}
+
+void MD5convert(BYTE value[], WORD length, BYTE *result){
     //init MD5
     MD5_CTX ctx;
     md5_init(&ctx);
@@ -8,12 +17,12 @@ void MD5convert(byte value[], word length, byte *result){
     md5_final(&ctx, result);
 }
 
-void calc_hash(Transactions trans, byte *result){
+void calc_hash(Transactions trans, BYTE *result){
     SHA256_CTX ctx;
-    byte temp[SHA256_BLOCK_SIZE]; //array store result
-    // buffer to convert struct Transactions to bytes
-    byte *buff = (byte*)malloc(sizeof(Transactions) * sizeof(byte));
-    //convert struct Transactions to bytes array
+    BYTE temp[SHA256_BLOCK_SIZE]; //array store result
+    // buffer to convert struct Transactions to BYTEs
+    BYTE *buff = (BYTE*)malloc(sizeof(Transactions) * sizeof(BYTE));
+    //convert struct Transactions to BYTEs array
     memcpy(buff, &trans, sizeof(Transactions));
     //init sha256 encode and convert to sha256
     sha256_init(&ctx);
@@ -23,12 +32,12 @@ void calc_hash(Transactions trans, byte *result){
     memcpy(result, &temp, SHA256_BLOCK_SIZE);
 }
 
-block block_init(data value, const byte addr[], const byte pre_hash[], int index){
+block block_init(data value, const BYTE addr[], const BYTE pre_hash[], int index){
     //get time create block
     datetime timestamp = get_currenttime();
     block ret = { 0 };
     // write block
-    byte hash[SHA256_BLOCK_SIZE];
+    BYTE hash[SHA256_BLOCK_SIZE];
     // transaction data
     Transactions trans = {0};
     memcpy(&trans.segment, &value, sizeof(data));

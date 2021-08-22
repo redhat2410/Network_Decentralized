@@ -13,9 +13,9 @@ int main(int argc, char **argv){
     data segment;
     block b;
 
-    byte str[] = {"Hello World"};
-    byte address[] = {0x90, 0x2b, 0x34, 0xb1, 0x84, 0x4d};
-    byte *addr = (byte*)malloc(MD5_BLOCK_SIZE * sizeof(byte));
+    BYTE str[] = {"Hello World"};
+    BYTE address[] = {0x90, 0x2b, 0x34, 0xb1, 0x84, 0x4d};
+    BYTE *addr = (BYTE*)malloc(MD5_BLOCK_SIZE * sizeof(BYTE));
 
     MD5convert(address, 6, addr);
 

@@ -15,11 +15,11 @@
 /**
  * struct data about:
  *      + @param length         length of data
- *      + @param value          array value with size 64 byte /block
+ *      + @param value          array value with size 64 BYTE /block
 */
 typedef struct data{
-    word length;
-    byte value[DATA_BLOCK_SIZE];
+    WORD length;
+    BYTE value[DATA_BLOCK_SIZE];
 }data;
 
 /**
@@ -29,7 +29,7 @@ typedef struct data{
  *      + @param address           address of device store next block
 */
 typedef struct Transactions{
-    byte address[MD5_BLOCK_SIZE];
+    BYTE address[MD5_BLOCK_SIZE];
     datetime timestamp;
     data segment;
 }Transactions;
@@ -40,25 +40,32 @@ typedef struct Transactions{
  *      + @param transaction       packet data.
 */
 typedef struct block{
-    word index;
-    byte hash[SHA256_BLOCK_SIZE];
+    WORD index;
+    BYTE hash[SHA256_BLOCK_SIZE];
     Transactions transaction;
-    byte previous_hash[SHA256_BLOCK_SIZE];
+    BYTE previous_hash[SHA256_BLOCK_SIZE];
 }block;
 
+/**
+ * function create_data use to create data for block
+ * @param length        the length of data.
+ * @param buff          array BYTE data (max 64 BYTEs).
+ * @return              the function return packet data.
+*/
+data create_data(WORD length, BYTE *buff);
 /**
  * function calc_hash compute hash code of transaction packet data
  * @param trans     transaction packet data.
  * @param result    result hash code
 */
-void calc_hash(Transactions trans, byte *result);
+void calc_hash(Transactions trans, BYTE *result);
 /**
  * function MD5convert convert data to MD5 encode
  * @param value     value to convert MD5 hash
  * @param length    length of value
  * @param result    result of hash process
 */
-void MD5convert(byte value[], word length, byte *result);
+void MD5convert(BYTE value[], WORD length, BYTE *result);
 /**
  * function block_init will be initialized block with param:
  *      @param value        data to store in block.
@@ -66,7 +73,7 @@ void MD5convert(byte value[], word length, byte *result);
  *      @param pre_hash     hash code previous block
  *      @param index        index block
 */
-block block_init(data value, const byte* addr, const byte* pre_hash, int index);
+block block_init(data value, const BYTE* addr, const BYTE* pre_hash, int index);
 
 #ifdef DEBUG
 
