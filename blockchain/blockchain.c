@@ -7,5 +7,4 @@
 block genesis_block(void){
     // create genesis block
     block genesis;
-    
 }

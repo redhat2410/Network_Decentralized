@@ -24,6 +24,6 @@ int main(int argc, char **argv){
 
     b = block_init(segment, addr, DEFAULT_SHA256, 1);
 
-    print(b);
+    print_debug_block(b);
     return 0;
 }

@@ -15,8 +15,8 @@ typedef BYTE            BOOL;
 #define FALSE   0
 
 /***************** define value default *****************/
-const data __default_data = {.length = 0, .value = { 0 } };
-#define DEFAULT_DATA __default_data
+// const data __default_data = {.length = 0, .value = { 0 } };
+// #define DEFAULT_DATA __default_data
 
 //detect platform os
 #if defined(__linux__)

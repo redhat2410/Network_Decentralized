@@ -77,7 +77,7 @@ block block_init(data value, const BYTE* addr, const BYTE* pre_hash, int index);
 
 #ifdef DEBUG
 
-void print(block b);
+void print_debug_block(block b);
 
 #endif
 
