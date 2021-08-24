@@ -1,5 +1,9 @@
 TARGET=main
-CC ?= gcc
+CC ?=gcc
+RM ?=rm
+# flag compile
+CFLAGS ?=-c -w 
+CFLAGS_OUT ?=-o
 # direction source
 BUI_DIR=./build
 CRP_DIR=./crypto
@@ -8,7 +12,7 @@ TIM_DIR=./times
 NET_DIR=./network
 # source modules
 CRP_SRC= md5.c sha256.c
-BLC_SRC= block.c
+BLC_SRC= block.c linkedlist.c
 TIM_SRC= datetime.c
 MAIN_SRC= main.c
 # object modules
@@ -16,50 +20,36 @@ CRP_OBJ= $(addsuffix .o,$(basename $(CRP_SRC)))
 BLC_OBJ= $(addsuffix .o,$(basename $(BLC_SRC)))
 TIM_OBJ= $(addsuffix .o,$(basename $(TIM_SRC)))
 MAIN_OBJ= $(addsuffix .o,$(basename $(MAIN_SRC)))
-
-CRP_PATH := $(foreach dir,$(CRP_SRC),$(wildcard $(CRP_DIR)/$(dir)))
-BLC_PATH := $(foreach dir,$(BLC_SRC),$(wildcard $(BLC_DIR)/$(dir)))
-TIM_PATH := $(foreach dir,$(TIM_SRC),$(wildcard $(TIM_DIR)/$(dir)))
-
+# collect include header 
 CRP_INC := $(foreach dir,$(addsuffix .h,$(basename $(CRP_SRC))),$(wildcard $(CRP_DIR)/$(dir)))
 BLC_INC := $(foreach dir,$(addsuffix .h,$(basename $(BLC_SRC))),$(wildcard $(BLC_DIR)/$(dir)))
 TIM_INC := $(foreach dir,$(addsuffix .h,$(basename $(TIM_SRC))),$(wildcard $(TIM_DIR)/$(dir)))
 
-$(TARGET): $(MAIN_OBJ) $(CRP_OBJ) $(BLC_OBJ) $(TIM_OBJ) $(CRP_INC) $(BLC_INC) $(TIM_INC)
-	$(CC) $(BUI_DIR)/$< -o $(TARGET)
 
-$(CRP_OBJ): $(CRP_PATH) 
-	# $(CC) -c $< -o $(BUI_DIR)/$@
-	echo $< $@ $(CRP_INC)
+$(TARGET): $(MAIN_OBJ) $(CRP_OBJ) $(BLC_OBJ) $(TIM_OBJ)
+	@echo "CC	$@"
+	@$(CC) $^ $(CFLAGS_OUT) $@
 
-$(BLC_OBJ): $(BLC_PATH) $(BLC_INC)
-	$(CC) -c $< -o $(BUI_DIR)/$@
+$(CRP_OBJ): $(CRP_INC)
+	@echo "CC	$(addsuffix .c,$(basename $@))"
+	@$(CC) $(CFLAGS) $(CRP_DIR)/$(addsuffix .c,$(basename $@)) $(CFLAGS_OUT) $@
 
-$(TIM_OBJ): $(TIM_PATH) 
-	$(CC) -c $< -o $(BUI_DIR)/$@
+$(BLC_OBJ): $(BLC_INC)
+	@echo "CC	$(addsuffix .c,$(basename $@))"
+	@$(CC) $(CFLAGS) $(BLC_DIR)/$(addsuffix .c,$(basename $@)) $(CFLAGS_OUT) $@
+
+$(TIM_OBJ): $(TIM_INC)
+	@echo "CC	$(addsuffix .c,$(basename $@))"
+	@$(CC) $(CFLAGS) $(TIM_DIR)/$(addsuffix .c,$(basename $@)) $(CFLAGS_OUT) $@
 
 $(MAIN_OBJ): $(MAIN_SRC)
-	$(CC) -c -w $< -o $(BUI_DIR)/$@
+	@echo "CC	$<"
+	@$(CC) $(CFLAGS) $< $(CFLAGS_OUT) $@
 
 clean:
-	rm -f $(BUI_DIR)/*.o
-
-# main: main.o sha256.o md5.o datetime.o block.o
-# 	$(CC) $(BUI_DIR)/main.o $(BUI_DIR)/datetime.o $(BUI_DIR)/block.o $(BUI_DIR)/sha256.o $(BUI_DIR)/md5.o -o main
-
-# sha256.o: ./crypto/sha256.c ./crypto/sha256.h
-# 	$(CC) -c ./crypto/sha256.c -o $(BUI_DIR)/sha256.o
-
-# md5.o: ./crypto/md5.c ./crypto/md5.h
-# 	$(CC) -c ./crypto/md5.c -o $(BUI_DIR)/md5.o
-
-# datetime.o: ./times/datetime.c ./times/datetime.h
-# 	$(CC) -c ./times/datetime.c -o $(BUI_DIR)/datetime.o
-
-# block.o: ./blockchain/block.c ./blockchain/block.h
-# 	$(CC) -c ./blockchain/block.c -o $(BUI_DIR)/block.o
-
-# main.o: main.c
-# 	$(CC) -c main.c -o $(BUI_DIR)/main.o
-# clean:
-# 	rm -f $(BUI_DIR)/*.o
+	@echo "CLEAN"
+	@$(RM) $(CRP_OBJ)
+	@$(RM) $(BLC_OBJ)
+	@$(RM) $(TIM_OBJ)
+	@$(RM) $(MAIN_OBJ)
+	@$(RM) $(TARGET)
