@@ -5,47 +5,30 @@
 #include "times/datetime.h"
 #include "blockchain/block.h"
 #include "blockchain/linkedlist.h"
+#include "blockchain/blockchain.h"
 #include "crypto/sha256.h"
 #include "crypto/md5.h"
 
-
 int main(int argc, char **argv){
-    // Transactions trans;
-    // data segment;
-    // block b;
+    BYTE str[] = {"Hello World"};
 
-    // BYTE str[] = {"Hello World"};
-    // BYTE address[] = {0x90, 0x2b, 0x34, 0xb1, 0x84, 0x4d};
-    // BYTE *addr = (BYTE*)malloc(MD5_BLOCK_SIZE * sizeof(BYTE));
+    CHAIN *new_chain = NULL;
 
-    // MD5convert(address, 6, addr);
+    DATA temp = create_data(strlen(str), str);
+    BYTE* hash = (BYTE*)malloc(SHA256_BLOCK_SIZE * sizeof(BYTE));
+    char name[SHA256_BLOCK_SIZE * 2];
+    
+    new_chain = genesis_block(new_chain, hash);
+    new_chain = add_block(hash, temp, 1, new_chain);
+    new_chain = add_block(hash, temp, 2, new_chain);
+    new_chain = add_block(hash, temp, 3, new_chain);
 
-    // segment.length = strlen(str);
-    // memcpy(&segment.value, &str, strlen(str));
+    CHAIN* node = find_node(1, new_chain);
 
-    // b = block_init(segment, addr, DEFAULT_SHA256, 1);
+    // print_debug_chain(new_chain);
+    print_debug_node(node);
 
-    // print_debug_block(b);
-    // return 0;
-
-    insert_first(1, 10);
-    insert_first(2, 20);
-    insert_first(3, 30);
-    insert_first(4, 40);
-
-    print_debug_chain();
-
-    delete_first();
-
-    print_debug_chain();
-
-    delete_node(2);
-
-    print_debug_chain();
-
-    CHAIN* temp = find_node(1);
-
-    print_debug_node(temp);
+    write_block_local(node->block);
 
     return 0;
 }

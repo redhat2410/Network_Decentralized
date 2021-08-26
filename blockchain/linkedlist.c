@@ -4,29 +4,30 @@
 #include <string.h>
 #include "linkedlist.h"
 
-CHAIN *head_node = NULL;
+// CHAIN **head_node = NULL;
 
-void insert_first(int index, int address){
+CHAIN* insert_first(int index, BLOCK block, CHAIN* head_node){
     //create link
-    CHAIN* link = (CHAIN*)malloc(sizeof(CHAIN));
+    CHAIN *link = (CHAIN*)malloc(sizeof(CHAIN));
     // write index and data to chain
     link->index = index;
-    link->address = address;
+    memcpy(&link->block, &block, sizeof(BLOCK));
     // point next head_node
     link->next = head_node;
     // set address node head_node to new node
-    head_node = link;
+    return link;
+
+    
 }
 
-CHAIN* delete_first(void){
+CHAIN* delete_first(CHAIN* head_node){
     // set temp is first node in chain
     CHAIN* temp = head_node;
-    head_node = head_node->next;
-    //return
-    return temp;
+    //return chain has removed
+    return head_node->next;
 }
 
-CHAIN* delete_node(int index){
+CHAIN* delete_node(int index, CHAIN* head_node){
     CHAIN* current = head_node;
     CHAIN* previous = NULL;
 
@@ -40,13 +41,13 @@ CHAIN* delete_node(int index){
         }
     }
 
-    if(current == head_node) head_node = head_node->next;
+    if(current == head_node) return head_node->next;
     else previous->next = current->next;
 
-    return current;
+    return head_node;
 }
 
-CHAIN* find_node(int index){
+CHAIN* find_node(int index, CHAIN* head_node){
     CHAIN* current = head_node;
 
     if(head_node == NULL) return NULL;
@@ -58,11 +59,11 @@ CHAIN* find_node(int index){
     return current;
 }
 
-BOOL is_empty(void){
+BOOL is_empty(CHAIN* head_node){
     return (head_node == NULL) ? TRUE : FALSE;
 }
 
-int length_chain(void){
+int length_chain(CHAIN* head_node){
     int length = 0;
     CHAIN* current;
     //browser node in chain.
@@ -72,12 +73,13 @@ int length_chain(void){
     return length;
 }
 
-void print_debug_chain(void){
-    CHAIN* ptr = head_node;
+void print_debug_chain(CHAIN* head_node){
+    CHAIN *ptr = head_node;
     //start from begining
     printf("+++++ debug chain +++++\n");
     while(ptr != NULL){
-        printf("{%d, %ld}\n", ptr->index, ptr->address);
+        printf("{%d}\n", ptr->index);
+        print_debug_block(ptr->block);
         ptr = ptr->next;
     }
     printf("+++++++++++++++++++++++\n\n");
@@ -86,6 +88,6 @@ void print_debug_chain(void){
 void print_debug_node(CHAIN* node){
     printf("+++++ debug node +++++\n");
     printf("\tindex:\t%d\n", node->index);
-    printf("\tvalue:\t%d\n", node->address);
+    print_debug_block(node->block);
     printf("+++++++++++++++++++++++\n\n");
 }

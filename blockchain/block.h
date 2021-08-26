@@ -17,10 +17,10 @@
  *      + @param length         length of data
  *      + @param value          array value with size 64 BYTE /block
 */
-typedef struct data{
+typedef struct DATA{
     WORD length;
     BYTE value[DATA_BLOCK_SIZE];
-}data;
+}DATA;
 
 /**
  *  struct Transactions about:
@@ -28,23 +28,23 @@ typedef struct data{
  *      + @param segment           data segment
  *      + @param address           address of device store next block
 */
-typedef struct Transactions{
+typedef struct TRANSACTION{
+    WORD index;
     BYTE address[MD5_BLOCK_SIZE];
-    datetime timestamp;
-    data segment;
-}Transactions;
+    DATETIME timestamp;
+    DATA segment;
+}TRANSACTION;
 /**
  * struct block about 
  *      + @param hash:             hash code of block signature digit.
  *      + @param previous_hash     hash code of previous block signature digital of previour block.
  *      + @param transaction       packet data.
 */
-typedef struct block{
-    WORD index;
+typedef struct BLOCK{
     BYTE hash[SHA256_BLOCK_SIZE];
-    Transactions transaction;
+    TRANSACTION transaction;
     BYTE previous_hash[SHA256_BLOCK_SIZE];
-}block;
+}BLOCK;
 
 /**
  * function create_data use to create data for block
@@ -52,13 +52,13 @@ typedef struct block{
  * @param buff          array BYTE data (max 64 BYTEs).
  * @return              the function return packet data.
 */
-data create_data(WORD length, BYTE *buff);
+DATA create_data(WORD length, BYTE *buff);
 /**
  * function calc_hash compute hash code of transaction packet data
  * @param trans     transaction packet data.
  * @param result    result hash code
 */
-void calc_hash(Transactions trans, BYTE *result);
+void calc_hash(TRANSACTION trans, BYTE *result);
 /**
  * function MD5convert convert data to MD5 encode
  * @param value     value to convert MD5 hash
@@ -73,11 +73,18 @@ void MD5convert(BYTE value[], WORD length, BYTE *result);
  *      @param pre_hash     hash code previous block
  *      @param index        index block
 */
-block block_init(data value, const BYTE* addr, const BYTE* pre_hash, int index);
-
+BLOCK block_init(DATA value, const BYTE* addr, const BYTE* pre_hash, int index);
+/**
+ * function sha2str use to convert hash sha256 to string.
+ * @param hash              hash sha256/md5
+ * @param result            result convert
+ * @return                  the function return length of string.
+*/
+int sha2str(BYTE *hash, char result[]);
+int md52str(BYTE *hash, char result[]);
 #ifdef DEBUG
 
-void print_debug_block(block b);
+void print_debug_block(BLOCK b);
 
 #endif
 

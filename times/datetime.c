@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "datetime.h"
 
-datetime get_currenttime(void){
-    datetime ret; //struct data to return
+DATETIME get_currenttime(void){
+    DATETIME ret; //struct data to return
     time_t rawtime;
     struct tm *timeinfo;
 

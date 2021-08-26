@@ -12,7 +12,7 @@ TIM_DIR=./times
 NET_DIR=./network
 # source modules
 CRP_SRC= md5.c sha256.c
-BLC_SRC= block.c linkedlist.c
+BLC_SRC= block.c linkedlist.c blockchain.c
 TIM_SRC= datetime.c
 MAIN_SRC= main.c
 # object modules
