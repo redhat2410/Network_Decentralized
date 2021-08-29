@@ -74,14 +74,7 @@ void MD5convert(BYTE value[], WORD length, BYTE *result);
  *      @param index        index block
 */
 BLOCK block_init(DATA value, const BYTE* addr, const BYTE* pre_hash, int index);
-/**
- * function sha2str use to convert hash sha256 to string.
- * @param hash              hash sha256/md5
- * @param result            result convert
- * @return                  the function return length of string.
-*/
-int sha2str(BYTE *hash, char result[]);
-int md52str(BYTE *hash, char result[]);
+
 #ifdef DEBUG
 
 void print_debug_block(BLOCK b);

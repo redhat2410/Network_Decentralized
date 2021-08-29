@@ -54,24 +54,6 @@ BLOCK block_init(DATA value, const BYTE addr[], const BYTE pre_hash[], int index
     return ret;
 }
 
-int sha2str(BYTE *hash, char result[]){
-    char character[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
-                'b', 'c', 'd', 'e', 'f'};
-    char str[SHA256_BLOCK_SIZE * 2];
-    BYTE high = 0, low = 0;
-
-    for(int i = 0; i < SHA256_BLOCK_SIZE; i++){
-        low = hash[i] & 0x0F;
-        high = (hash[i] >> 4) & 0x0F;
-        str[(i * 2)] = character[high];
-        str[(i * 2) + 1] = character[low];
-            
-    }
-    // copy str to result
-    strcpy(result, str);
-    // return lenght of string
-    return SHA256_BLOCK_SIZE * 2;
-}
 
 #ifdef DEBUG
 void print_debug_block(BLOCK b){

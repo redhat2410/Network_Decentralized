@@ -7,6 +7,8 @@
 #include <string.h>
 
 #include "../define.h"
+#include "../crypto/crypto.h"
+#include "../fs/fs.h"
 #include "block.h"
 #include "linkedlist.h"
 
@@ -41,14 +43,23 @@ BOOL vaild_block(BLOCK current_block);
  * the function write_block_local use to write block in local pc.
  * block will write to default_folder has been defined.
  * @param b             block want to write in local.
+ * @param folder        folder store file.
  * @return              return status write TRUE/FALSE.
 */
-BOOL write_block_local(BLOCK b);
+BOOL write_block_local(BLOCK b, char* folder);
 /**
  * the function read_block_local use to read block from local
  * @param url           path to file.
  * @return              the function return block after read success.
 */
 BLOCK read_block_local(char *url);
+/**
+ * file2chian use to convert file to block chain.
+ * @param   path        path to file
+ * @param   chain       chain of block
+ * @return              the function will be return blockchain.
+*/
+CHAIN* file2chain(char* path, CHAIN* chain);
+BOOL chain2file(CHAIN* chain, char* folder);
 
 #endif

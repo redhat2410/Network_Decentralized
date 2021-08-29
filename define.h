@@ -23,7 +23,7 @@ typedef BYTE            BOOL;
 //detect platform os
 #if defined(__linux__)
     #define PLATFORM_NAME   "linux"
-    #define DEFAULT_FOLDER  ".//"
+    // #define DEFAULT_FOLDER  {"temp/"}
 #elif defined(_WIN32)
     #define PLATFORM_NAME   "windows"
 #elif defined(_WIN64)
