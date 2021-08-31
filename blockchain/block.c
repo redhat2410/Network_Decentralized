@@ -4,6 +4,7 @@ DATA create_data(WORD length, BYTE *buff){
     DATA segment;
     // write packet data
     segment.length = length;
+    memset(&segment.value[0], 0, sizeof(BYTE) * DATA_BLOCK_SIZE);
     memcpy(&segment.value[0], buff, sizeof(BYTE) * length);
     // return packet data have been written.
     return segment;
@@ -30,6 +31,7 @@ void calc_hash(TRANSACTION trans, BYTE *result){
     sha256_final(&ctx, temp);
     // return encode result
     memcpy(result, &temp, SHA256_BLOCK_SIZE);
+    free(buff);
 }
 
 BLOCK block_init(DATA value, const BYTE addr[], const BYTE pre_hash[], int index){

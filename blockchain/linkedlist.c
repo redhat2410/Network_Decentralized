@@ -16,8 +16,6 @@ CHAIN* insert_first(int index, BLOCK block, CHAIN* head_node){
     link->next = head_node;
     // set address node head_node to new node
     return link;
-
-    
 }
 
 CHAIN* delete_first(CHAIN* head_node){
@@ -43,6 +41,9 @@ CHAIN* delete_node(int index, CHAIN* head_node){
 
     if(current == head_node) return head_node->next;
     else previous->next = current->next;
+
+    free(current);
+    free(previous);
 
     return head_node;
 }

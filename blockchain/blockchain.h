@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <libgen.h>
 
 #include "../define.h"
 #include "../crypto/crypto.h"
@@ -16,9 +17,10 @@
  * function genesis_block create first block 
  * @param   chain       put block into chain
  * @param   hash        return hash of bloock.
+ * @param   shortcut    name file and extension.
  * @return              The function return chai.
 */
-CHAIN* genesis_block(CHAIN* chain, BYTE *hash);
+CHAIN* genesis_block(CHAIN* chain, BYTE *hash, char* shortcut);
 
 /**
  * function add_block add block into chain.
@@ -62,4 +64,5 @@ BLOCK read_block_local(char *url);
 CHAIN* file2chain(char* path, CHAIN* chain);
 BOOL chain2file(CHAIN* chain, char* folder);
 
+BOOL convertChain2file(char* shortcut, char* folder);
 #endif

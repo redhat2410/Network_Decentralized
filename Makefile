@@ -62,4 +62,3 @@ clean:
 	@$(RM) $(FS_OBJ)
 	@$(RM) $(MAIN_OBJ)
 	@$(RM) $(TARGET)
-	@$(RM) temp/*

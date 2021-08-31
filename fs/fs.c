@@ -4,19 +4,20 @@
 #include <string.h>
 
 #include "fs.h"
+#include "../crypto/sha256.h"
 
 char* make_path_file(char* folder, char* name, char* extension){
     int len_folder = strlen(folder);
     int len_name = strlen(name);
     int len_extension = strlen(extension);
-
-    char* l_path = (char*)malloc((len_folder + len_name + len_extension) * sizeof(char));
-    // copy folder to long path
-    memcpy(&l_path[0], folder, len_folder * sizeof(char));
-    // copy name file to long path
-    memcpy(&l_path[len_folder], name, len_name * sizeof(char));
-    // copy extension to long path
-    memcpy(&l_path[len_folder + len_name], extension, len_extension * sizeof(char));
-
+    char* l_path = (char*)malloc((len_folder + len_name + len_extension + 1) * sizeof(char));
+    // concat chain
+    strcpy(&l_path[0], folder);
+    strcpy(&l_path[len_folder], name);
+    if(len_name == (SHA256_BLOCK_SIZE * 2))
+        strcpy(&l_path[len_folder + len_name], extension);
+    else
+        strcpy(&l_path[len_folder + len_name - 1], extension);
+    // return long path
     return l_path;
 }
