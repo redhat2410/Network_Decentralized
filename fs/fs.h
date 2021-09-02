@@ -10,5 +10,5 @@
  * @param extension         extension of file
 */
 char* make_path_file(char* folder, char* name, char* extension);
-
+void print_string(char* str, int length);
 #endif

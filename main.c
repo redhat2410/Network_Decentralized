@@ -11,18 +11,22 @@
 
 int main(int argc, char **argv){
     // char* path = {"/home/ducvu/Desktop/Example.py"};
-    CHAIN* new_chain = NULL;
-
-    new_chain = file2chain(argv[1], new_chain);
-    
-    printf("%d\n", length_chain(new_chain));
-    chain2file(new_chain, "temp/");
-    printf("done\n");
+    // CHAIN* new_chain = NULL;
+    CHAIN* old_chain = NULL;
+    // new_chain = file2chain(argv[1], new_chain);
+    // print_debug_chain(new_chain);
+    // // printf("%d\n", length_chain(new_chain));
+    // chain2file(new_chain, "temp/");
+    // printf("done\n");
 
     const char* shortcut = {"temp/0000000000000000000000000000000000000000000000000000000000000000.sha"};
     const char* folder = {"temp/"};
 
-    convertChain2file(shortcut, folder);
+    convertChain2file(shortcut, folder, old_chain);
+
+    // BLOCK b = read_block(argv[1]);
+
+    // print_debug_block(b);
 
     return 0;
 }

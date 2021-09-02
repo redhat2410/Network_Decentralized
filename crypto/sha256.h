@@ -19,9 +19,9 @@
 typedef unsigned char BYTE;             // 8-bit byte
 typedef unsigned int  WORD;             // 32-bit word, change to "long" for 16-bit machines
 //default value sha256 is 0 (null)
-const BYTE default_sha256[SHA256_BLOCK_SIZE];
+// const BYTE default_sha256[SHA256_BLOCK_SIZE];
 
-#define DEFAULT_SHA256 default_sha256
+// #define DEFAULT_SHA256 default_sha256
 
 typedef struct {
 	BYTE data[64];

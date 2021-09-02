@@ -21,3 +21,9 @@ char* make_path_file(char* folder, char* name, char* extension){
     // return long path
     return l_path;
 }
+
+void print_string(char* str, int length){
+    for(int i = 0; i < length; i++)
+        printf("%c", str[i]);
+    printf("\n");
+}

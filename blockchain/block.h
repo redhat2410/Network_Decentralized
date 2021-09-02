@@ -75,7 +75,7 @@ void MD5convert(BYTE value[], WORD length, BYTE *result);
 */
 BLOCK block_init(DATA value, const BYTE* addr, const BYTE* pre_hash, int index);
 
-#ifdef DEBUG
+#if defined(DEBUG)
 
 void print_debug_block(BLOCK b);
 

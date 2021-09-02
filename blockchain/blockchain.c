@@ -5,6 +5,8 @@
 #include "blockchain.h"
 
 BYTE address_default[] = {0x90, 0x2b, 0x34, 0xb1, 0x84, 0x4d};
+const BYTE default_sha256[SHA256_BLOCK_SIZE];
+
 
 CHAIN* genesis_block(CHAIN* chain, BYTE *hash, char* shortcut){
     // create genesis block
@@ -16,7 +18,7 @@ CHAIN* genesis_block(CHAIN* chain, BYTE *hash, char* shortcut){
     //create data by shortcut file
     segment = create_data(strlen(shortcut), (BYTE*)shortcut);
     //create first block
-    genesis = block_init(segment, addr, DEFAULT_SHA256, 0);
+    genesis = block_init(segment, addr, default_sha256, 0);
     //copy hash of block
     memcpy(hash, genesis.hash, SHA256_BLOCK_SIZE * sizeof(BYTE));
     // release memory
@@ -38,6 +40,20 @@ CHAIN* add_block(const BYTE *pre_hash, DATA segment,
     free(addr);
     //return chain
     return insert_first(index, child_block, chain);
+}
+
+CHAIN* last_block(const BYTE *pre_hash, CHAIN* chain){
+    //create block and data
+    BLOCK last_block;
+    BYTE* addr = (BYTE*)malloc(MD5_BLOCK_SIZE * sizeof(BYTE));
+    DATA segment = { 0 };
+    // address physical
+    MD5convert(address_default, 6, addr);
+    last_block = block_init(segment, addr, pre_hash, -1);
+    // release memory
+    free(addr);
+    // return chain
+    return insert_first(-1, last_block, chain);
 }
 
 BOOL vaild_block(BLOCK current_block){
@@ -85,9 +101,34 @@ BOOL write_block_local(BLOCK b, char* folder){
     return TRUE;
 }
 
-BLOCK read_block_local(char *url){
-    //read file in local 
-    BLOCK b = {0};
+CHAIN* read_block_local(int idx, char *url, CHAIN* chain){
+    //read file in local
+    BLOCK b;
+    FILE *fp;
+    BYTE *buff = (BYTE*)malloc(sizeof(BLOCK) * sizeof(BYTE));
+    char chr;
+    int index = 0;
+
+    fp = fopen(url, "r");
+    if(fp == NULL) return NULL;
+    // read byte to file
+    while((chr = fgetc(fp)) != EOF){
+        if(index > sizeof(BLOCK)) break;
+        buff[index] = chr;
+        index++;
+    }
+    //convert buff byte to block
+    memcpy(&b, buff, sizeof(BLOCK) * sizeof(BYTE));
+    //close file and release buffer
+    // print_debug_block(b);
+    fclose(fp);
+    free(buff);
+    return insert_first(index, b, chain);
+}
+
+BLOCK read_block(char *url){
+    //read file in local
+    BLOCK b;
     FILE *fp;
     BYTE *buff = (BYTE*)malloc(sizeof(BLOCK) * sizeof(BYTE));
     char chr;
@@ -103,12 +144,12 @@ BLOCK read_block_local(char *url){
     }
     //convert buff byte to block
     memcpy(&b, buff, sizeof(BLOCK) * sizeof(BYTE));
-
     //close file and release buffer
     fclose(fp);
     free(buff);
     return b;
 }
+
 
 CHAIN* file2chain(char* path, CHAIN* chain){
     // read file and split data to segment 64 byte and write to block.
@@ -147,6 +188,8 @@ CHAIN* file2chain(char* path, CHAIN* chain){
         chain = add_block(hash, temp, index, chain);
     }
     else { /* do nothing */ }
+    //add last block into chain
+    chain = last_block(hash, chain);
     //close file
     fclose(fp);
     free(hash);
@@ -168,44 +211,31 @@ BOOL chain2file(CHAIN* chain, char* folder){
     return TRUE;
 }
 
-BOOL convertChain2file(char* shortcut, char* folder){
+BOOL convertChain2file(char* shortcut, char* folder, CHAIN* chain){
     BLOCK genesis, b;
     char hashstr[(SHA256_BLOCK_SIZE * 2) + 1];
     char *fname, *temp;
     FILE *fp;
-    FILE *fc;
+    int idx = 0;
+    BOOL isexit = FALSE;
     //first read file shortcut and search next file in folder.
-    genesis = read_block_local(shortcut);
-    sha2str(genesis.hash, hashstr);
-    // create file to recogver
-    temp = (char*)malloc(genesis.transaction.segment.length * sizeof(char));
-    strcpy(temp, (char*)genesis.transaction.segment.value);
-    fc = fopen(temp, "w");
-    // after read file shortcut and convert to BLOCK 
-    fname = make_path_file(folder, hashstr, ".sha");
-    // check file is exists 
-    fp = fopen(fname, "r");
-    if(fp == NULL) return FALSE;
-    do{
-        fclose(fp);
-        //read file and convert to block
-        printf("%s\n", fname);
-        b = read_block_local(fname);
-        printf("1");
-        for(int i = 0; i < b.transaction.segment.length; i++)
-            fprintf(fc, "%c", (char)b.transaction.segment.value[i]);
-        sha2str(b.hash, hashstr);
-        printf("2");
+    chain = read_block_local(idx, shortcut, chain);
+    // check result
+    if(chain == NULL) return FALSE;
+    // looop
+    while(!isexit){
+        // read next file
+        print_debug_chain(chain);
+        sha2str(chain[idx].block.hash, hashstr);
         fname = make_path_file(folder, hashstr, ".sha");
-        printf("3");
-        // check file
-        fp = fopen(fname, "r");
-    }while(fp != NULL);
-
-    printf("Create file: %s\n", genesis.transaction.segment.value);
-    //close all file and release memory
-    if(fp != NULL) fclose(fp);
-    if(fc != NULL) fclose(fc);
-    free(temp);
-    free(fname);
+        print_string(fname, strlen(fname));
+        // increase index
+        idx++;
+        // read file and input chain
+        chain = read_block_local(idx, fname, chain);
+        // check result is null exit loop
+        if(chain == NULL) isexit = TRUE;
+        // check last block and exit loop
+        if(chain[idx].block.transaction.index == -1) isexit = TRUE;
+    }
 }

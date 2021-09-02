@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <libgen.h>
+#include <unistd.h>
 
 #include "../define.h"
 #include "../crypto/crypto.h"
@@ -29,10 +30,18 @@ CHAIN* genesis_block(CHAIN* chain, BYTE *hash, char* shortcut);
  * @param hash              hash of current block.
  * @param segment           segment of data.
  * @param chain             put block in to chain
- * @return                  the function is return block.
+ * @return                  the function is return chain.
 */
 CHAIN* add_block(const BYTE *pre_hash, DATA segment, int index, 
             CHAIN* chain);
+
+/**
+ * the function last_blokc add last block for chain
+ * @param   pre_hash        hash of previour block
+ * @param   chain           put block into chain
+ * @return                  the function is return chain
+*/
+CHAIN* last_block(const BYTE *pre_hash, CHAIN* chain);
 
 /**
  * the function vaid_block use to check hash of block is valid 
@@ -54,7 +63,8 @@ BOOL write_block_local(BLOCK b, char* folder);
  * @param url           path to file.
  * @return              the function return block after read success.
 */
-BLOCK read_block_local(char *url);
+CHAIN* read_block_local(int idx, char *url, CHAIN* chain);
+BLOCK read_block(char *url);
 /**
  * file2chian use to convert file to block chain.
  * @param   path        path to file
@@ -64,5 +74,5 @@ BLOCK read_block_local(char *url);
 CHAIN* file2chain(char* path, CHAIN* chain);
 BOOL chain2file(CHAIN* chain, char* folder);
 
-BOOL convertChain2file(char* shortcut, char* folder);
+BOOL convertChain2file(char* shortcut, char* folder, CHAIN* chain);
 #endif
