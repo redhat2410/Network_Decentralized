@@ -219,23 +219,20 @@ BOOL convertChain2file(char* shortcut, char* folder, CHAIN* chain){
     int idx = 0;
     BOOL isexit = FALSE;
     //first read file shortcut and search next file in folder.
-    chain = read_block_local(idx, shortcut, chain);
-    // check result
-    if(chain == NULL) return FALSE;
+    b = read_block(shortcut);
     // looop
     while(!isexit){
         // read next file
-        print_debug_chain(chain);
-        sha2str(chain[idx].block.hash, hashstr);
+        sha2str(b.hash, hashstr);
         fname = make_path_file(folder, hashstr, ".sha");
         print_string(fname, strlen(fname));
         // increase index
-        idx++;
+        // idx++;
         // read file and input chain
-        chain = read_block_local(idx, fname, chain);
-        // check result is null exit loop
-        if(chain == NULL) isexit = TRUE;
+        b = read_block(fname);
+        print_debug_block(b);
         // check last block and exit loop
-        if(chain[idx].block.transaction.index == -1) isexit = TRUE;
+        if(b.transaction.index == -1) isexit = TRUE;
+        sleep(1);
     }
 }
