@@ -1,13 +1,21 @@
+from hashlib import sha256
 import os
 import sys
 from datetime import datetime
-from modules.blockchain import BLOCKCHAIN, DATETIME, TRANSACTION
+from modules.blockchain import BLOCKCHAIN, DATETIME, TRANSACTION, BLOCK
 from modules.filechain import FILECHAIN
 
-# chain = BLOCKCHAIN('/home/ducvu/Desktop/video2.mp4')
+# chain = BLOCKCHAIN('/home/ducvu/Desktop/hello.txt')
+# chain.show()
 # fs = FILECHAIN(chain, 'temp/')
-
 # fs.chain2file()
+
+chain = BLOCKCHAIN()
+
+fs = FILECHAIN(chain, 'temp/')
+fs.file2chain('temp/hello.sha')
+
+chain.show()
 
 # date = DATETIME(now = datetime.now())
 # buff = date.__bytes__()
@@ -15,14 +23,7 @@ from modules.filechain import FILECHAIN
 # date2 = DATETIME(buff = buff)
 # print(date2.__str__())
 
-data = "Hello World"
+# data = "Hello World"
 
-trans = TRANSACTION(len(data), data.encode('utf8'))
-trans.__enc__()
-buffer = trans.__bytes__()
-trans.__str__()
-length = int.from_bytes(buffer[0:2], 'big')
-buffer = buffer[2:len(buffer)]
-trans2 = TRANSACTION()
-trans2.__dec__(buffer, length)
-trans2.__str__()
+# b = BLOCK(1, len(data), data.encode('utf8'), sha256(data.encode('utf8')).digest())
+# print(b.__bytes__())
